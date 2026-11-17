@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
@@ -38,8 +39,17 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    - name: Run Unit Tests & Build APK
-      run: ./gradlew testDebugUnitTest assembleDebug
+    - name: Run Unit Tests
+      run: ./gradlew testDebugUnitTest
+      # Verification: Step passes only if all local unit tests succeed.
+
+    - name: Run Lint Check
+      run: ./gradlew lintDebug
+      # Verification: Step passes if no fatal lint errors are found.
+
+    - name: Build Debug APK
+      run: ./gradlew assembleDebug
+      # Verification: Produces the APK file in app/build/outputs/apk/debug/.
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
